@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Job matrix</title>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="app">
+        <button v-on:click="minusPage">&lt</button>
+        <input v-model.number="currentPage">
+        <button v-on:click="plusPage">&gt</button>
+        {{maxPages}}
+        <div class="fix-col-wrapper">
+        <div class="fix-col-scroller">
+        <table class="fix-col-table">
+            <thead>
+                <tr>
+                    <th class="fix-col-sticky-col">Pipeline</th>
+                    <template v-for="(jobName) in jobNames">
+                        <th>{{jobName.split("$")[1]}}</th>
+                    </template>
+                </tr>
+            </thead>
+            <tbody>
+                <template v-for="(pipeline, index) in pipelines">
+                <tr>
+                    <td class="fix-col-sticky-col">                    
+                        <img width="16" height="16" v-bind:src="'assets/status_' + pipeline.status + '.svg'" />
+                        {{getPipeCaption(pipeline.sha) }}
+                    </td>
+                    <template v-for="(jobName) in jobNames">
+                        <td>
+                            <img width="16" height="16" v-bind:src="'assets/status_' + getJobStatus(pipeline.id + '$' + jobName) + '.svg'" />
+                            {{getJobCaption(pipeline.id + "$" + jobName)}}
+                        </td>
+                    </template>
+                </tr>
+                </template>
+            </tbody>
+        </table>
+        </div>
+        </div>
+    </div>
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
