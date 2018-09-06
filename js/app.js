@@ -95,7 +95,8 @@ const app = new Vue({
                     const pipeInfo = {
                         sha: pipes.data[i].sha,
                         id: pipes.data[i].id,
-                        status: pipes.data[i].status
+                        status: pipes.data[i].status,
+                        link: 'https://' + self.gitlab + '/' + self.nameWithNamespace + '/pipelines/' + pipes.data[i].id
                     }
                     self.pipelines.push(pipeInfo)
                     self.fetchJobs(pipeInfo.id)
@@ -117,7 +118,8 @@ const app = new Vue({
                             stage: jobs.data[i].stage,
                             status: jobs.data[i].status,
                             started_at: jobs.data[i].started_at,
-                            finished_at: jobs.data[i].finished_at
+                            finished_at: jobs.data[i].finished_at,
+                            link: 'https://' + self.gitlab + '/' + self.nameWithNamespace + '/-/jobs/' + jobs.data[i].id
                         }
                         comboName = jobInfo.stage + '$' + jobInfo.name
                         jobKey = pipeId + '$' + comboName
@@ -150,6 +152,15 @@ const app = new Vue({
                 return ''
             }
         },      
+        getJobLink: function (key) {
+            const self = this
+            if (key in self.jobData) {
+                return self.jobData[key].link
+            }
+            else {
+                return ''
+            }
+        },
         getJobCaption: function (key) {
             const self = this
             if (key in self.jobData) {
