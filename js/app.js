@@ -166,6 +166,8 @@ const app = new Vue({
             if (key in self.jobData) {
                 if (self.jobData[key].started_at === null && self.jobData[key].finished_at === null) {
                     return ''
+                }else if (self.jobData[key].started_at === null) {
+                    return ''
                 }else if (self.jobData[key].finished_at === null) {
                     const duration = new Date() - new Date(self.jobData[key].started_at)
                     return self.getDuration(duration)
