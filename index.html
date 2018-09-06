@@ -10,7 +10,7 @@
         <button v-on:click="minusPage">&lt</button>
         <input v-model.number="currentPage">
         <button v-on:click="plusPage">&gt</button>
-        {{maxPages}}
+        {{maxPages}}<br>
         <div class="fix-col-wrapper">
         <div class="fix-col-scroller">
         <table class="fix-col-table">
@@ -26,13 +26,17 @@
                 <template v-for="(pipeline, index) in pipelines">
                 <tr>
                     <td class="fix-col-sticky-col">                    
-                        <img width="16" height="16" v-bind:src="'assets/status_' + pipeline.status + '.svg'" />
-                        {{getPipeCaption(pipeline.sha) }}
+                        <a target="_blank" v-bind:href="pipeline.link">
+                            <img width="16" height="16" v-bind:src="'assets/status_' + pipeline.status + '.svg'" />                       
+                            {{ getPipeCaption(pipeline.sha) }}
+                        </a>
                     </td>
                     <template v-for="(jobName) in jobNames">
                         <td>
-                            <img width="16" height="16" v-bind:src="'assets/status_' + getJobStatus(pipeline.id + '$' + jobName) + '.svg'" />
-                            {{getJobCaption(pipeline.id + "$" + jobName)}}
+                            <a target="_blank" v-bind:href="getJobLink(pipeline.id + '$' + jobName)">
+                                <img width="16" height="16" v-bind:src="'assets/status_' + getJobStatus(pipeline.id + '$' + jobName) + '.svg'" />
+                                {{ getJobCaption(pipeline.id + "$" + jobName) }}
+                            </a>
                         </td>
                     </template>
                 </tr>
