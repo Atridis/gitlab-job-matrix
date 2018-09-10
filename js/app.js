@@ -17,6 +17,9 @@ const app = new Vue({
     created: function() {        
         var self = this
         self.initialize()
+        setInterval(function() {
+            self.initialize()
+          }, 600000)
     },
     methods: {
         initialize: function() {
