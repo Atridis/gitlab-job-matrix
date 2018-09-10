@@ -120,6 +120,7 @@ const app = new Vue({
                             name: jobs.data[i].name,
                             stage: jobs.data[i].stage,
                             status: jobs.data[i].status,
+                            created_at: jobs.data[i].created_at,
                             started_at: jobs.data[i].started_at,
                             finished_at: jobs.data[i].finished_at,
                             link: 'https://' + self.gitlab + '/' + self.nameWithNamespace + '/-/jobs/' + jobs.data[i].id
@@ -138,7 +139,7 @@ const app = new Vue({
                             sha: jobs.data[i].commit.id,
                             shortSha: jobs.data[i].commit.short_id,
                             title: title,
-                            shortTitle: (title.length < 30 ? title : title.substring(0, 30 - 3) + '...')
+                            shortTitle: (title.length < 35 ? title : title.substring(0, 35 - 3) + '...')
                         }
                         if (!(commitData.sha in self.commitData)) {
                             Vue.set(self.commitData, commitData.sha, commitData)
