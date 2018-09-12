@@ -26,9 +26,12 @@
                 <template v-for="(pipeline, index) in pipelines">
                 <tr>
                     <td class="fix-col-sticky-col">                    
+                        <abbr v-bind:title="getCommitAuthor(pipeline.sha)">
+                            <img width="16" height="16" v-bind:src="getCommitAvatar(pipeline.sha)" />
+                        </abbr>
                         <a target="_blank" v-bind:href="pipeline.link">
                             <img width="16" height="16" v-bind:src="'assets/status_' + pipeline.status + '.svg'" />                       
-                            {{ getPipeCaption(pipeline.sha) }}
+                            <abbr v-bind:title="getPipeHint(pipeline.sha)">{{ getPipeCaption(pipeline.sha) }}</abbr>
                         </a>
                     </td>
                     <template v-for="(jobName) in jobNames">
