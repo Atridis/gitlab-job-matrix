@@ -12,6 +12,7 @@ const app = new Vue({
         pipelines: [],
         jobNames: [],
         commitData: {},
+        commitAvatars: {},
         jobData: {}
     },
     created: function() {        
@@ -102,7 +103,40 @@ const app = new Vue({
                         link: 'https://' + self.gitlab + '/' + self.nameWithNamespace + '/pipelines/' + pipes.data[i].id
                     }
                     self.pipelines.push(pipeInfo)
+                    self.fetchCommitInfo(pipeInfo.sha)
                     self.fetchJobs(pipeInfo.id)
+                }
+              })
+        },
+        fetchCommitInfo: function(sha) {
+            const self = this
+            axios.get('/projects/' + self.projectId + '/repository/commits/' + sha)
+              .then(function(commit) {
+                const title = commit.data.title
+                commitData = {
+                    sha: commit.data.id,
+                    shortSha: commit.data.short_id,
+                    title: title,
+                    shortTitle: (title.length < 35 ? title : title.substring(0, 35 - 3) + '...'),
+                    message: commit.data.message,
+                    authorName: commit.data.author_name,
+                    authorEmail: commit.data.author_email
+                }
+                if (!(commitData.sha in self.commitData)) {
+                    Vue.set(self.commitData, commitData.sha, commitData)
+                }
+                self.fetchCommitAuthorAvatar(commitData.sha, commitData.authorEmail)
+              })
+        },
+        fetchCommitAuthorAvatar: function(sha, email) {
+            const self = this
+            axios.get('/users?search=' + email)
+              .then(function(users) {
+                if (users.data.length === 0) {
+                    return
+                }      
+                if (!(sha in self.commitAvatars)) {
+                    Vue.set(self.commitAvatars, sha, users.data[0].avatar_url)
                 }
               })
         },
@@ -132,17 +166,6 @@ const app = new Vue({
                         }
                         if (!(jobKey in self.jobData)) {
                             Vue.set(self.jobData, jobKey, jobInfo)
-                        }
-                        // commit info
-                        const title = jobs.data[i].commit.title
-                        commitData = {
-                            sha: jobs.data[i].commit.id,
-                            shortSha: jobs.data[i].commit.short_id,
-                            title: title,
-                            shortTitle: (title.length < 35 ? title : title.substring(0, 35 - 3) + '...')
-                        }
-                        if (!(commitData.sha in self.commitData)) {
-                            Vue.set(self.commitData, commitData.sha, commitData)
                         }
                     }
                 })
@@ -201,6 +224,33 @@ const app = new Vue({
             }
             else {
                 return key
+            }
+        },
+        getPipeHint: function (key) {
+            const self = this
+            if (key in self.commitData) {
+                return self.commitData[key].message
+            }
+            else {
+                return key
+            }
+        },
+        getCommitAuthor: function (key) {
+            const self = this
+            if (key in self.commitAvatars) {
+                return self.commitData[key].authorName
+            }
+            else {
+                return ''
+            }
+        },
+        getCommitAvatar: function (key) {
+            const self = this
+            if (key in self.commitAvatars) {
+                return self.commitAvatars[key]
+            }
+            else {
+                return ''
             }
         }
     }
